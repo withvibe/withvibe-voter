@@ -63,7 +63,7 @@ app.all("/mcp", async (req, res) => {
 // can show "you voted". Prefer the platform-injected user id (when the UI proxy
 // forwards it); otherwise fall back to a per-browser cookie so distinct tabs /
 // browsers act as distinct voters even in standalone/dev runs.
-const VOTER_COOKIE = "reef_voter";
+const VOTER_COOKIE = "aquascape_voter";
 
 function parseCookies(req) {
   const raw = req.headers.cookie;
@@ -151,7 +151,7 @@ app.get("/", (_req, res) => res.redirect("/ui"));
 
 const PORT = Number(process.env.PORT) || 8080;
 app.listen(PORT, () => {
-  console.log(`reef plugin listening on :${PORT}`);
+  console.log(`aquascape plugin listening on :${PORT}`);
   console.log(`  MCP endpoint: POST /mcp`);
   console.log(`  UI:           GET  /ui`);
   console.log(`  schema:       ${process.env.PGSCHEMA || "(none)"}`);

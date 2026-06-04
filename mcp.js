@@ -15,7 +15,7 @@ import {
 } from "./db.js";
 
 // The MCP bridge hard-caps every plugin tool call at 60s
-// (apps/api/src/plugins/plugin-mcp-bridge.service.ts). So reef_await_decision
+// (apps/api/src/plugins/plugin-mcp-bridge.service.ts). So aquascape_await_decision
 // cannot block for the full ~10-minute vote window in one call — it long-polls
 // for at most POLL_BUDGET_MS, then asks the agent to call again. Keep this
 // comfortably under the 60s cap to leave room for network + the agent's
@@ -41,7 +41,7 @@ function renderBoardText(board) {
   const out = [];
   const s = board.settings;
   out.push(
-    `# Vibe Reef — voting board   (window ${s.vote_window_seconds}s, ` +
+    `# Aquascape — voting board   (window ${s.vote_window_seconds}s, ` +
       `need ${s.required_approvals} approval / ${s.required_rejections} reject)`
   );
   const voting = board.proposals.filter((p) => p.status === "voting");
@@ -89,14 +89,14 @@ export function registerTools(server, req) {
   const proposer = proposerFromHeaders(req);
 
   server.registerTool(
-    "reef_propose_change",
+    "aquascape_propose_change",
     {
       description:
-        "Submit a requested change to the reef/aquarium for the team to vote on. " +
-        "IMPORTANT: this env runs in Vibe Reef mode — you must NOT edit any files " +
+        "Submit a requested change to the scene/aquarium for the team to vote on. " +
+        "IMPORTANT: this env runs in Aquascape mode — you must NOT edit any files " +
         "or apply the change yet. Call this first with the user's request, then " +
-        "call reef_await_decision and wait for the team's verdict. Only make the " +
-        "change if it is APPROVED.",
+        "call aquascape_await_decision and wait for the team's verdict. Only make " +
+        "the change if it is APPROVED.",
       inputSchema: {
         prompt: z
           .string()
@@ -120,7 +120,7 @@ export function registerTools(server, req) {
               `Proposal #${p.id} opened for team voting (closes ${new Date(
                 p.voting_ends_at
               ).toISOString()}).\n` +
-              `Do NOT make any changes yet. Now call reef_await_decision with ` +
+              `Do NOT make any changes yet. Now call aquascape_await_decision with ` +
               `proposal_id=${p.id} and keep calling it until it returns a final ` +
               `decision.\n\n${await tail()}`,
           },
@@ -130,20 +130,20 @@ export function registerTools(server, req) {
   );
 
   server.registerTool(
-    "reef_await_decision",
+    "aquascape_await_decision",
     {
       description:
         "Wait for the team's verdict on a proposal. Long-polls for up to ~45s and " +
         "returns one of: APPROVED (now make exactly the proposed change, then call " +
-        "reef_record_change), REJECTED/EXPIRED (do NOT make any change — tell the " +
-        "user the team declined), or STILL_VOTING (call this tool again with the " +
-        "same proposal_id). Never edit files until this returns APPROVED.",
+        "aquascape_record_change), REJECTED/EXPIRED (do NOT make any change — tell " +
+        "the user the team declined), or STILL_VOTING (call this tool again with " +
+        "the same proposal_id). Never edit files until this returns APPROVED.",
       inputSchema: {
         proposal_id: z
           .number()
           .int()
           .positive()
-          .describe("The id returned by reef_propose_change."),
+          .describe("The id returned by aquascape_propose_change."),
       },
     },
     async ({ proposal_id }) => {
@@ -176,8 +176,8 @@ export function registerTools(server, req) {
               type: "text",
               text:
                 `STILL_VOTING on proposal #${proposal_id} ${votes}. ` +
-                `The team hasn't decided yet. Call reef_await_decision again with ` +
-                `proposal_id=${proposal_id} to keep waiting. Do not make any changes.`,
+                `The team hasn't decided yet. Call aquascape_await_decision again ` +
+                `with proposal_id=${proposal_id} to keep waiting. Do not make any changes.`,
             },
           ],
         };
@@ -190,8 +190,8 @@ export function registerTools(server, req) {
               type: "text",
               text:
                 `APPROVED ✅ — proposal #${proposal_id} ${votes}: "${p.prompt}".\n` +
-                `Now make exactly this change to the reef, then call ` +
-                `reef_record_change with proposal_id=${proposal_id} and a 1-line ` +
+                `Now make exactly this change to the scene, then call ` +
+                `aquascape_record_change with proposal_id=${proposal_id} and a 1-line ` +
                 `summary (and commit_sha / preview_url if you have them).`,
             },
           ],
@@ -220,7 +220,7 @@ export function registerTools(server, req) {
   );
 
   server.registerTool(
-    "reef_record_change",
+    "aquascape_record_change",
     {
       description:
         "Call this AFTER you have applied an APPROVED change, to record what " +
@@ -279,10 +279,10 @@ export function registerTools(server, req) {
   );
 
   server.registerTool(
-    "reef_status",
+    "aquascape_status",
     {
       description:
-        "Show the current Vibe Reef voting board: proposals in voting, vote " +
+        "Show the current Aquascape voting board: proposals in voting, vote " +
         "tallies, and recently resolved changes. Call this to re-orient.",
       inputSchema: {},
     },
@@ -292,7 +292,7 @@ export function registerTools(server, req) {
   // Surfaced for completeness — lets the agent mark its own apply attempt as
   // failed (e.g. build broke) so the board doesn't show a phantom "approved".
   server.registerTool(
-    "reef_report_failure",
+    "aquascape_report_failure",
     {
       description:
         "Report that you could not apply an approved change (e.g. the build " +
@@ -327,7 +327,7 @@ export function registerTools(server, req) {
 
 export function newMcpServer() {
   return new McpServer(
-    { name: "reef", version: "0.1.0" },
+    { name: "aquascape", version: "0.1.0" },
     { capabilities: { tools: {} } }
   );
 }

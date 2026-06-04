@@ -1,21 +1,21 @@
 # SPDX-FileCopyrightText: 2026 WithVibe
 # SPDX-License-Identifier: Apache-2.0
 
-id: withvibe.reef
-name: Vibe Reef
+id: withvibe.aquascape
+name: Aquascape
 description: Turn an env into a team-voted vibecoding game — prompts must be approved by the team before the agent applies them.
 version: 0.1.0
 icon: fish
 
 # Built locally for now. Rebuild after changes:
-#   docker build -t local/reef:0.1 .
+#   docker build -t local/aquascape:0.1 .
 # For the marketplace this becomes a public, multi-arch image:
-#   ghcr.io/withvibe/reef:<version>
-image: local/reef:0.1
+#   ghcr.io/withvibe/aquascape:<version>
+image: local/aquascape:0.1
 
-# env scope: one container per env. Each env is its own "aquarium" / game
-# board, with its own proposal queue + vote state. Postgres schema is isolated
-# per (env, plugin) automatically.
+# env scope: one container per env. Each env is its own scene / game board,
+# with its own proposal queue + vote state. Postgres schema is isolated per
+# (env, plugin) automatically.
 scope: env
 
 # Persistent state. The platform provisions a dedicated role + schema in the

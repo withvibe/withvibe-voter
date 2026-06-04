@@ -87,7 +87,7 @@ INSERT INTO settings (id) VALUES (1) ON CONFLICT (id) DO NOTHING;
 export async function initSchema() {
   if (!process.env.DATABASE_URL) {
     throw new Error(
-      "DATABASE_URL not set — reef needs shared-postgres storage"
+      "DATABASE_URL not set — aquascape needs shared-postgres storage"
     );
   }
   // In production the platform pre-provisions this schema + a role scoped to
@@ -314,7 +314,7 @@ export async function getVersion() {
   return v ? new Date(v).getTime() : 0;
 }
 
-// Shape shared by the UI and the agent's reef_status tool.
+// Shape shared by the UI and the agent's aquascape_status tool.
 export async function getBoard({ limit = 30 } = {}) {
   const [settings, proposals, events] = await Promise.all([
     getSettings(),
