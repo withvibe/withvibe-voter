@@ -1,0 +1,27 @@
+# Keep the docker build context small — anything not COPYed by Dockerfile
+# is dead weight here.
+node_modules/
+.git/
+.gitignore
+.github/
+
+# OSS / docs (image runs the same without them)
+LICENSE
+NOTICE
+README.md
+CHANGELOG.md
+CODE_OF_CONDUCT.md
+CONTRIBUTING.md
+
+# Local files
+.env
+.env.*
+*.log
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# The manifest is the platform's install input, not part of the runtime
+# image — explicitly excluded so it can't accidentally be COPYed in.
+manifest.yaml
