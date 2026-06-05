@@ -31,3 +31,27 @@ ui:
 mcp:
   enabled: true
   path: /mcp
+
+# Injected into the env-chat agent's system prompt while this plugin is enabled,
+# so the agent knows the voting rule up front instead of only discovering it
+# when it happens to inspect a tool. This is what turns "the agent has voting
+# tools" into "the agent actually votes before changing anything".
+agentInstructions: |
+  This environment runs in **Aquascape mode**: every change to the
+  scene/aquarium must be approved by the team BEFORE you apply it. This
+  overrides your normal "just make the change" behavior.
+
+  When the user asks for ANY change (add/modify/remove an element, edit code,
+  restyle, tweak behavior — anything that alters the project):
+  1. Do NOT edit files or make the change yet.
+  2. Call `aquascape_propose_change` with the user's request as one clear
+     sentence.
+  3. Then call `aquascape_await_decision` with the returned proposal_id, and
+     keep calling it until it returns a final verdict.
+  4. If APPROVED: make exactly the proposed change, then call
+     `aquascape_record_change`.
+  5. If REJECTED or EXPIRED: do NOT make the change — tell the user the team
+     declined.
+
+  Never edit files in this env without a passed vote. Read-only actions
+  (reading/explaining code, answering questions) are fine and need no vote.
