@@ -7,11 +7,12 @@ description: Turn an env into a team-voted vibecoding game — prompts must be a
 version: 0.1.0
 icon: fish
 
-# Built locally for now. Rebuild after changes:
-#   docker build -t local/aquascape:0.1 .
-# For the marketplace this becomes a public, multi-arch image:
-#   ghcr.io/withvibe/aquascape:<version>
-image: local/aquascape:0.1
+# Published multi-arch (linux/amd64, linux/arm64) on GHCR. Rebuild + push:
+#   docker buildx build --builder withvibe-builder \
+#     --platform linux/amd64,linux/arm64 \
+#     -t ghcr.io/withvibe/aquascape:0.1.0 -t ghcr.io/withvibe/aquascape:latest --push .
+# (For local dev only: docker build -t local/aquascape:0.1 .)
+image: ghcr.io/withvibe/aquascape:0.1.0
 
 # env scope: one container per env. Each env is its own scene / game board,
 # with its own proposal queue + vote state. Postgres schema is isolated per
