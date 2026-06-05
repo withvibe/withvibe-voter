@@ -5,7 +5,7 @@ id: withvibe.aquascape
 name: Aquascape
 description: Turn an env into a team-voted vibecoding game — prompts must be approved by the team before the agent applies them.
 version: 0.1.0
-icon: fish
+icon: sparkles
 
 # Published multi-arch (linux/amd64, linux/arm64) on GHCR. Rebuild + push:
 #   docker buildx build --builder withvibe-builder \
