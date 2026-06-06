@@ -1,22 +1,22 @@
 # SPDX-FileCopyrightText: 2026 WithVibe
 # SPDX-License-Identifier: Apache-2.0
 
-id: withvibe.aquascape
-name: Aquascape
-description: Turn an env into a team-voted vibecoding game — prompts must be approved by the team before the agent applies them.
+id: withvibe.voter
+name: Voter
+description: Turn any env into a team-voted workspace — prompts must be approved by the team before the agent applies them.
 version: 0.1.0
 icon: sparkles
 
 # Published multi-arch (linux/amd64, linux/arm64) on GHCR. Rebuild + push:
 #   docker buildx build --builder withvibe-builder \
 #     --platform linux/amd64,linux/arm64 \
-#     -t ghcr.io/withvibe/aquascape:0.1.0 -t ghcr.io/withvibe/aquascape:latest --push .
-# (For local dev only: docker build -t local/aquascape:0.1 .)
-image: ghcr.io/withvibe/aquascape:0.1.0
+#     -t ghcr.io/withvibe/voter:0.1.0 -t ghcr.io/withvibe/voter:latest --push .
+# (For local dev only: docker build -t local/voter:0.1 .)
+image: ghcr.io/withvibe/voter:0.1.0
 
-# env scope: one container per env. Each env is its own scene / game board,
-# with its own proposal queue + vote state. Postgres schema is isolated per
-# (env, plugin) automatically.
+# env scope: one container per env. Each env is its own voting board, with its
+# own proposal queue + vote state. Postgres schema is isolated per (env, plugin)
+# automatically.
 scope: env
 
 # Persistent state. The platform provisions a dedicated role + schema in the
@@ -37,19 +37,18 @@ mcp:
 # when it happens to inspect a tool. This is what turns "the agent has voting
 # tools" into "the agent actually votes before changing anything".
 agentInstructions: |
-  This environment runs in **Aquascape mode**: every change to the
-  scene/aquarium must be approved by the team BEFORE you apply it. This
-  overrides your normal "just make the change" behavior.
+  This environment runs in **Voter mode**: every change must be approved by the
+  team BEFORE you apply it. This overrides your normal "just make the change"
+  behavior.
 
-  When the user asks for ANY change (add/modify/remove an element, edit code,
+  When the user asks for ANY change (add/modify/remove something, edit code,
   restyle, tweak behavior — anything that alters the project):
   1. Do NOT edit files or make the change yet.
-  2. Call `aquascape_propose_change` with the user's request as one clear
-     sentence.
-  3. Then call `aquascape_await_decision` with the returned proposal_id, and
-     keep calling it until it returns a final verdict.
+  2. Call `voter_propose_change` with the user's request as one clear sentence.
+  3. Then call `voter_await_decision` with the returned proposal_id, and keep
+     calling it until it returns a final verdict.
   4. If APPROVED: make exactly the proposed change, then call
-     `aquascape_record_change`.
+     `voter_record_change`.
   5. If REJECTED or EXPIRED: do NOT make the change — tell the user the team
      declined.
 

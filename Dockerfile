@@ -1,8 +1,8 @@
 # SPDX-FileCopyrightText: 2026 WithVibe
 # SPDX-License-Identifier: Apache-2.0
 #
-# Aquascape plugin for WithVibe.
-#   docker build -t local/aquascape:0.1 .
+# Voter plugin for WithVibe.
+#   docker build -t local/voter:0.1 .
 #
 # Multi-stage build:
 #   1. Builder installs deps with `npm ci` against the committed lockfile.

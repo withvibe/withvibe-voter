@@ -113,8 +113,8 @@ export async function renderApp(board, voter) {
   const votingHtml = voting.length
     ? voting.map((p) => renderVotingCard(p, voter)).join("")
     : `<div class="empty-state">
-        <h3>🐠 Nothing to vote on</h3>
-        <p>Ask the AI in chat to change the scene. Its proposal will appear here for the team to approve before anything is applied.</p>
+        <h3>🗳️ Nothing to vote on</h3>
+        <p>Ask the AI in chat to make a change. Its proposal will appear here for the team to approve before anything is applied.</p>
       </div>`;
 
   const resolvedHtml = resolved.length
@@ -124,7 +124,7 @@ export async function renderApp(board, voter) {
   return `<div class="layout">
     <header class="topbar">
       <div class="topbar-left">
-        <h1 class="title">🪸 Aquascape</h1>
+        <h1 class="title">🗳️ Voter</h1>
         <p class="subtitle">Prompts are applied only after the team approves them.</p>
       </div>
       <form class="settings" hx-post="ui/settings" hx-target="#app" hx-swap="innerHTML" hx-trigger="change">
@@ -160,7 +160,7 @@ export function renderShell(inner) {
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Aquascape</title>
+<title>Voter</title>
 <script src="https://unpkg.com/htmx.org@2.0.3"></script>
 <style>${CSS}</style>
 </head>
@@ -199,7 +199,7 @@ ${inner}
 </html>`;
 }
 
-// Aquatic dark palette — aligned with the WithVibe web theme but aquascape-tinted.
+// Dark palette — aligned with the WithVibe web theme.
 const CSS = `
 :root {
   --bg: hsl(205 40% 9%);

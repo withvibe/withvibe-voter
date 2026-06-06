@@ -1,16 +1,16 @@
 {
-  "name": "withvibe-plugin-aquascape",
+  "name": "withvibe-plugin-voter",
   "version": "0.1.0",
-  "description": "Aquascape — turn a WithVibe env into a team-voted vibecoding game. Prompts go through a proposal/vote gate before the agent applies them.",
+  "description": "Voter — turn any WithVibe env into a team-voted workspace. Prompts go through a proposal/vote gate before the agent applies them.",
   "license": "Apache-2.0",
   "author": "WithVibe (https://withvibe.dev)",
-  "homepage": "https://github.com/withvibe/withvibe-aquascape#readme",
+  "homepage": "https://github.com/withvibe/withvibe-voter#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/withvibe/withvibe-aquascape.git"
+    "url": "git+https://github.com/withvibe/withvibe-voter.git"
   },
   "bugs": {
-    "url": "https://github.com/withvibe/withvibe-aquascape/issues"
+    "url": "https://github.com/withvibe/withvibe-voter/issues"
   },
   "keywords": [
     "withvibe",
@@ -18,9 +18,9 @@
     "mcp",
     "ai",
     "agent",
-    "vibecoding",
-    "game",
-    "voting"
+    "voting",
+    "approval",
+    "governance"
   ],
   "engines": {
     "node": ">=20"

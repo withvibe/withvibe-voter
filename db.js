@@ -34,7 +34,7 @@ pool.on("connect", (client) => {
 
 // One-shot DDL. Re-runs on every boot are cheap — IF NOT EXISTS makes them
 // no-ops once the schema is in place. A singleton `settings` row holds the
-// per-aquarium voting rules.
+// per-env voting rules.
 const DDL = `
 CREATE TABLE IF NOT EXISTS settings (
   id INT PRIMARY KEY DEFAULT 1 CHECK (id = 1),
@@ -87,7 +87,7 @@ INSERT INTO settings (id) VALUES (1) ON CONFLICT (id) DO NOTHING;
 export async function initSchema() {
   if (!process.env.DATABASE_URL) {
     throw new Error(
-      "DATABASE_URL not set — aquascape needs shared-postgres storage"
+      "DATABASE_URL not set — voter needs shared-postgres storage"
     );
   }
   // In production the platform pre-provisions this schema + a role scoped to
@@ -314,7 +314,7 @@ export async function getVersion() {
   return v ? new Date(v).getTime() : 0;
 }
 
-// Shape shared by the UI and the agent's aquascape_status tool.
+// Shape shared by the UI and the agent's voter_status tool.
 export async function getBoard({ limit = 30 } = {}) {
   const [settings, proposals, events] = await Promise.all([
     getSettings(),

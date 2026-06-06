@@ -1,50 +1,50 @@
-# Aquascape — a WithVibe plugin
+# Voter — a WithVibe plugin
 
-> Turn a [WithVibe](https://withvibe.dev) env into a **team-voted vibecoding game**. When this plugin is enabled, the AI doesn't apply a prompt straight away — it opens a **proposal** the team votes on, and only an **approved** proposal gets built. (Aquascaping is the craft of designing an underwater scene; here the team designs it together, by vote.)
+> Turn **any** [WithVibe](https://withvibe.dev) env into a **team-voted workspace**. When this plugin is enabled, the AI doesn't apply a prompt straight away — it opens a **proposal** the team votes on, and only an **approved** proposal gets built. Enable it on any env and that env becomes a vote-gated sandbox.
 
 ```
-You (in chat):  "give the clownfish a neon trail"
+You (in chat):  "add a dark-mode toggle"
         │
         ▼
-   aquascape_propose_change ──────►  Proposal #7 opens (10-min vote)
-        │                               👍 👎  team votes in the panel
-   aquascape_await_decision  ◄───────  APPROVED ✅  /  REJECTED ✗
+   voter_propose_change ──────►  Proposal #7 opens (10-min vote)
+        │                           👍 👎  team votes in the panel
+   voter_await_decision  ◄───────  APPROVED ✅  /  REJECTED ✗
         │
         ▼  (only if approved)
-   agent edits the scene  ──►  aquascape_record_change  ──►  shows up in History
+   agent makes the change  ──►  voter_record_change  ──►  shows up in History
 ```
 
-It ships as the default game for the WithVibe public demo (an aquarium), but
-it's content-agnostic: enable it on **any** env and that env becomes a
-vote-gated sandbox. Multiple envs = multiple independent scenes.
+It's content-agnostic — it knows nothing about what the env contains. Whatever
+the env is (an app, a doc, a 3D scene, a config), enabling Voter makes every
+change go through the team first. Multiple envs = multiple independent boards.
 
 ## How the gate works (and why it's just a plugin)
 
 WithVibe auto-injects an enabled plugin's MCP tools into the agent's turn.
-Aquascape uses that to gate prompts **without any change to WithVibe core**:
+Voter uses that to gate prompts **without any change to WithVibe core**:
 
-1. `aquascape_propose_change(prompt)` — opens a proposal and tells the agent to
+1. `voter_propose_change(prompt)` — opens a proposal and tells the agent to
    **not** touch anything yet.
-2. `aquascape_await_decision(proposal_id)` — long-polls the vote. The platform's
+2. `voter_await_decision(proposal_id)` — long-polls the vote. The platform's
    MCP bridge caps a single tool call at 60s, so this returns after ~45s with
    `STILL_VOTING` and the agent simply calls it again until it's terminal.
-3. On `APPROVED`, the agent makes the change and calls `aquascape_record_change`.
+3. On `APPROVED`, the agent makes the change and calls `voter_record_change`.
    On `REJECTED` / `EXPIRED` it makes no change.
 
 Meanwhile every teammate votes in the plugin's own UI panel — independent of the
 agent. The gate is **agent-cooperative** (enforced via tool instructions), which
-is the right trade-off for a friendly game; hardening it to be unbypassable is a
-later option that would need a small core hook.
+is the right trade-off for a friendly workflow; hardening it to be unbypassable
+is a later option that would need a small core hook.
 
 ## MCP tools
 
 | Tool | Purpose |
 |---|---|
-| `aquascape_propose_change` | Open a proposal for the requested change. Agent must call this instead of editing. |
-| `aquascape_await_decision` | Long-poll the team's verdict (`APPROVED` / `REJECTED` / `EXPIRED` / `STILL_VOTING`). |
-| `aquascape_record_change` | Record what shipped after applying an approved change. |
-| `aquascape_report_failure` | Mark an approved change as failed (e.g. build broke). |
-| `aquascape_status` | Show the current board: proposals in voting + recently resolved. |
+| `voter_propose_change` | Open a proposal for the requested change. Agent must call this instead of editing. |
+| `voter_await_decision` | Long-poll the team's verdict (`APPROVED` / `REJECTED` / `EXPIRED` / `STILL_VOTING`). |
+| `voter_record_change` | Record what shipped after applying an approved change. |
+| `voter_report_failure` | Mark an approved change as failed (e.g. build broke). |
+| `voter_status` | Show the current board: proposals in voting + recently resolved. |
 
 ## State
 
@@ -72,25 +72,25 @@ manifest.yaml ──► WithVibe spawns one container per env (scope: env)
 ## Build
 
 ```bash
-docker build -t local/aquascape:0.1 .
+docker build -t local/voter:0.1 .
 ```
 
-For the marketplace this is published multi-arch as `ghcr.io/withvibe/aquascape:<version>`.
+For the marketplace this is published multi-arch as `ghcr.io/withvibe/voter:<version>`.
 
 ## Install in WithVibe
 
 1. Workspace admin → **Plugins** → **Install plugin** (or **Marketplace** once listed).
 2. Paste [manifest.yaml](manifest.yaml) (or 1-click install from the catalog).
-3. Open any env → enable **Aquascape** → that env is now a voted scene.
+3. Open any env → enable **Voter** → that env is now a vote-gated workspace.
 
 ## Local development
 
 ```bash
-docker build -t local/aquascape:0.1 .
+docker build -t local/voter:0.1 .
 docker run --rm -p 8080:8080 \
   -e DATABASE_URL="postgres://user:pass@host.docker.internal:5432/withvibe_plugins" \
-  -e PGSCHEMA="aquascape_dev" \
-  local/aquascape:0.1
+  -e PGSCHEMA="voter_dev" \
+  local/voter:0.1
 # open http://localhost:8080/ui  — two browsers = two voters
 ```
 
@@ -103,7 +103,7 @@ package.json    deps (express, pg, @modelcontextprotocol/sdk, zod)
 server.js       express entry — HTTP + MCP routes + vote handling
 db.js           pg pool, schema, proposal/vote/resolution helpers
 mcp.js          the gate: propose / await / record MCP tools
-ui.js           htmx voting panel + dark aquatic theme
+ui.js           htmx voting panel + dark theme
 ```
 
 ## License
