@@ -1,7 +1,7 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-07-09/server.schema.json",
   "name": "io.github.withvibe/withvibe-voter",
-  "description": "Vote-gated change control for WithVibe envs — the agent proposes a change via MCP and only builds it once the team approves.",
+  "description": "Vote-gated change control for WithVibe — the agent proposes a change via MCP; team approves first.",
   "repository": {
     "url": "https://github.com/withvibe/withvibe-voter",
     "source": "github"
